@@ -1,0 +1,83 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript" src="http://vk.com/js/api/openapi.js?129"></script>
+
+	<script type="text/javascript">
+	  VK.init({apiId: 2375675, onlyWidgets: true});
+	</script>
+	<script type="text/javascript">
+		var onDomIsRendered = function(doc, domString) {
+		  return new Promise(function(resolve, reject) {
+			function waitUntil() {
+			  setTimeout(function() {
+				if($(domString, doc).length > 0){
+				  resolve($(domString, doc));
+				}else {
+				  waitUntil();
+				}
+			  }, 100);
+			}
+			//start the loop
+			waitUntil();
+		  });
+		};
+		var onDomIsRenderedForIframe = function(iframe, domString) {
+		  return new Promise(function(resolve, reject) {
+			function waitUntil() {
+			  setTimeout(function() {
+				var doc = iframe.contentDocument || iframe.contentWindow.document;
+				if($(domString, doc).length > 0){
+				  resolve($(domString, doc));
+				}else {
+				  waitUntil();
+				}
+			  }, 100);
+			}
+			//start the loop
+			waitUntil();
+		  });
+		};
+
+		onDomIsRendered(document, "#vkwidget1").then(function(element){	
+			// get the iframe in my documnet
+			var iframe = document.getElementById("vkwidget1");
+			// get the window associated with that iframe
+			var iWindow = iframe.contentWindow;
+
+			onDomIsRenderedForIframe(iframe, ".wcomments_form_avatar").then(function(){
+				console.log(doc.getElementsByClassName("wcomments_form_avatar")[0].getAttribute("href").replace("/",""));
+			})
+			// wait for the window to load before accessing the content
+//			iWindow.addEventListener("load", function() {
+				// get the document from the window
+//				var doc = iframe.contentDocument || iframe.contentWindow.document;
+
+				// find the target in the iframe content
+//				console.log(doc.getElementsByClassName("wcomments_form_avatar")[0].getAttribute("href").replace("/",""));
+//				var target = doc.getElementById("target");
+//				target.innerHTML = "Found It!";
+//			});
+});
+	</script> 
+</head>
+<!-- Put this div tag to the place, where the Comments block will be -->
+<body>
+	<div style="">
+		<div id="vk_comments"></div>
+	</div>
+	<script type="text/javascript">
+		VK.Widgets.Comments("vk_comments", {limit: 20, width: "665", attach: "*"});
+	</script>
+<!--
+	<script type="text/javascript">
+		var checkExist = setInterval(function() {
+		   if (document.getElementsByClassName("wcomments_form_avatar").length > 0) {
+			  console.log(document.getElementsByClassName("wcomments_form_avatar")[0].getAttribute("href").replace("/",""));
+			  clearInterval(checkExist);
+		   }
+		}, 100); 
+	</script>
+-->
+</body>
+</html>
